@@ -1,0 +1,92 @@
+<div class="owl-carousel owl-theme home-slide">
+    {% for item in section.blocks %}
+    <div class="item">
+        <div class="main-slide">
+            <a href="{{item.settings.add_new_link}}">
+                <img src=" {{ item.settings.add_image | img_url: 'master' }}  " alt="slides" height="{{section.settings.imageheight}}" >
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+        
+</div>
+      
+      {% schema %}
+      {
+        "name": "Gallery slide",
+          "settings": [
+            {
+              "id": "title",
+              "type": "text",
+              "label": "Title",
+              "default": "Hello world"
+            },
+            {
+                "id": "imageheight",
+                "type": "text",
+                "label": "Height of slide",
+                "default": "700px"
+            }
+          ],
+          "max_blocks": 6,
+          "blocks": [
+            {
+              "type": "image",
+              "name": "Add new image",
+              "settings": [
+                {
+                  "id": "add_image",
+                  "type": "image_picker",
+                  "label": "Add new images"
+                },
+                {
+                  "id": "add_new_link",
+                  "type": "text",
+                  "label": "Link"
+                }
+              ]
+            }
+          ],
+          "presets": [
+            {
+              "name": "Home slide",
+      
+              "category": "Home",
+      
+              "settings":
+              {
+                "title": "Add a title" 
+              }
+            }
+      
+          ]
+      
+      }
+      {% endschema %}
+      
+      {% stylesheet %}
+      {% endstylesheet %}
+      
+      {% javascript %}
+      $('.home-slide').owlCarousel({
+        loop:true,
+        margin:10,
+        responsiveClass:true,
+        
+        responsive:{
+            0:{
+                items:1,
+                nav:false
+            },
+            600:{
+                items:1,
+                nav:false
+            },
+            1000:{
+                items:1,
+                nav:false,
+                loop:false
+            }
+        }
+      })
+      {% endjavascript %}
