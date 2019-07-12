@@ -1,0 +1,189 @@
+<!-- Products -->
+
+<div class="products">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 offset-lg-3">
+                <div class="section_title text-center">{{section.settings.title_popular_product}}</div>
+            </div>
+        </div>
+        <div class="row page_nav_row">
+            <div class="col">
+                <div class="page_nav">
+                    {% assign count = 0 %}
+                    <ul class="d-flex flex-row align-items-start justify-content-center">
+                        {% for item in collections %}
+                            {% assign count = count | plus: 1 %}
+                            {% if item.products %}
+                                <li class=" {% if count == 1 %} active {% endif %} "><a href="{{ item.url }}">
+                                    {{ item.title }}
+                                </a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row products_row">
+            
+            {% for item in section.blocks %}
+                <!-- get product in blocks -->
+                {% assign item_product_ = all_products[item.settings.item_product] %}
+                
+                <!-- Product -->
+                <div class="col-xl-4 col-md-6">
+                    <div class="product">
+                        <div class="product_image">
+                            <img src="{{ item_product_.featured_image | img_url:'master'}}" alt="{{ item_product_.featured_image.alt }}">
+                        </div>
+                        
+                        <div class="product_content">
+                            <div class="product_info d-flex flex-row align-items-start justify-content-start">
+                                <div>
+                                    <div>
+                                        <div class="product_name">
+                                            <a href="{{ item_product_.url }}">
+                                                    {{ item_product_.title }}
+                                            </a>
+                                        </div>
+                                        
+                                        <div class="product_category">In 
+                                            {% for collection in item_product_.collections %}
+                                                <a href="{{ collection.url }}">{{ collection.title }}</a>
+                                            {% endfor %}
+                                            
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="ml-auto text-right">
+                                    <div class="rating_r rating_r_4 home_item_rating"><i></i><i></i><i></i><i></i><i></i></div>
+                                    <div class="product_price text-right">
+                                        <!-- get price  -->
+                                        <span> {{ item_product_.price | money }} </span>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="before-send-ajax text-center" style="padding: 5px"> 
+                                {% include 'icon-ajax-load' %}
+                            </div>
+                            <div class="product_buttons">
+                                <input type="hidden" value="{{ item_product_.id }}" class="id_product" >
+                                <input type="hidden" value="{{ item_product_.url }}" class="url_product">
+                                <div class="text-right d-flex flex-row align-items-start justify-content-start">
+                                    <div class="product_button product_fav text-center d-flex flex-column align-items-center justify-content-center">
+                                        <div>
+                                            <div>
+                                                
+                                                {% include 'icon-heath' %}
+                                                <div>
+                                                    +
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="product_button product_cart text-center d-flex flex-column align-items-center justify-content-center">
+                                        
+                                        <div>
+                                            <div>
+                                                {% include 'icon-add-to-cart-home' %}
+                                                <div>+</div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end product -->
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- end product -->
+{% schema %}
+{
+    "name": "Popular product",
+    "settings": [
+        {
+            "id" : "title_popular_product",
+            "type": "text",
+            "label": "Title",
+            "default":"Popular product"
+        }
+    ],
+    "max_blocks": 6,
+    "blocks": [
+        {
+            "name" : "chooise_product",
+            "type" : "product",
+            "settings": [
+                {
+                    "id" : "item_product",
+                    "type" : "product",
+                    "label" : "Add products"              
+                }
+            ]
+        }
+    ],
+    "presets": [
+            {
+              "name": "popular product",
+              "category": "Home"
+            }
+    ]
+
+}
+{% endschema %}
+
+{{ '//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js' | script_tag }}
+<!-- {{ 'api.jquery.js' | shopify_asset_url | script_tag }} -->
+<script>
+    jQuery(document).ready(function () {
+        jQuery('.product_cart').click(function (e) { 
+            e.preventDefault();
+            var elm = $(this);
+            var id = $(this).parents('.product_buttons').find('.id_product').val();
+            var url = $(this).parents('.product_buttons').find('.url_product').val();
+            console.log(id);
+            // elm.parents('.product').find('.before-send-ajax').show();
+            jQuery.getJSON(url + '.js', function(product) {
+
+                var product_id=product.variants[0].id;
+                console.log(product_id)
+                // before send
+                
+                jQuery.post('/cart/add.js', {
+                    quantity:1,
+                    id:product_id
+                })
+                
+                // after send
+            });
+            swal.fire(
+                'Add to cart',
+                'Continute shoping',
+                'success'
+            );
+
+            var count = jQuery('#CartCount span:first').html();
+            jQuery('#CartCount span:first').html( parseInt(count) + 1 );
+            
+            // elm.parents('.product').find('.before-send-ajax').hide();
+        });
+               
+    });
+</script>
+
+{% javascript %}
+    
+{% endjavascript %}

@@ -3,7 +3,7 @@
     <div class="item">
         <div class="main-slide">
             <a href="{{item.settings.add_new_link}}">
-                <img src=" {{ item.settings.add_image | img_url: 'master' }}  " alt="slides" height="{{section.settings.imageheight}}" >
+                <img src=" {{ item.settings.add_image | img_url: 'master' }}  " alt="slides">
             </a>
         </div>
     </div>
@@ -65,6 +65,12 @@
       {% endschema %}
       
       {% stylesheet %}
+        .main-slide{
+          max-height: section.settings.height ;
+          overflow: hidden;
+        }
+
+
       {% endstylesheet %}
       
       {% javascript %}
